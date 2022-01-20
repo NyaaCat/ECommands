@@ -1,0 +1,21 @@
+name: ECommands
+main: cat.nyaa.ecommands.SpigotLoader
+version: ${project.version}
+api-version: 1.18
+depend:
+  - ECore
+commands:
+  pay:
+    usage: /pay <amount> <player...>
+    description: Transfer money to other players.
+    alias:
+      - pay
+    permission: ecommands.pay
+    permission-message: You don't have permission to use this command.
+  eco:
+    usage: /eco <amount>
+    description: administration commands about economy
+    alias:
+      - eco
+    permission: ecommands.eco
+    permission-message: You don't have permission to use this command.
