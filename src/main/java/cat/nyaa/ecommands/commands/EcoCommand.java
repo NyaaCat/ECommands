@@ -1,8 +1,6 @@
 package cat.nyaa.ecommands.commands;
 
 import cat.nyaa.ecommands.SpigotLoader;
-import cat.nyaa.ecommands.lang.MainLang;
-import cat.nyaa.ecore.EconomyCore;
 import land.melon.lab.simplelanguageloader.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,7 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -41,7 +38,7 @@ public class EcoCommand implements CommandExecutor {
                     amount = Double.parseDouble(args[3]);
                 } catch (NumberFormatException e) {
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("{amount}", args[3])
+                            Pair.of("amount", args[3])
                     ));
                     return false;
                 }
@@ -49,8 +46,8 @@ public class EcoCommand implements CommandExecutor {
                     ecoPlayerTask(amount, TaskType.valueOf(args[1].toUpperCase()), commandSender, args);
                 } catch (IllegalArgumentException e) {
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationInvalid.produce(
-                            Pair.of("{operation}", args[1]),
-                            Pair.of("{Operations}", String.join(", ", Arrays.stream(TaskType.values()).map(item -> item.name().toLowerCase()).toArray(String[]::new)))
+                            Pair.of("operation", args[1]),
+                            Pair.of("Operations", String.join(", ", Arrays.stream(TaskType.values()).map(item -> item.name().toLowerCase()).toArray(String[]::new)))
                     ));
                     return false;
                 }
@@ -65,7 +62,7 @@ public class EcoCommand implements CommandExecutor {
                     amount = Double.parseDouble(args[3]);
                 } catch (NumberFormatException e) {
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("{amount}", args[3])
+                            Pair.of("amount", args[3])
                     ));
                     return false;
                 }
@@ -83,7 +80,7 @@ public class EcoCommand implements CommandExecutor {
             OfflinePlayer player = getPlayer(args[i]);
             if (!player.hasPlayedBefore()) {
                 commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.playerNotExistAbort.produce(
-                        Pair.of("{player}", args[i])
+                        Pair.of("player", args[i])
                 ));
                 continue;
             }
@@ -91,8 +88,8 @@ public class EcoCommand implements CommandExecutor {
                 case SET -> {
                     if (pluginInstance.getEconomyCore().setPlayerBalance(player.getUniqueId(), amount))
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.setPlayerBalanceSuccess.produce(
-                                Pair.of("{player}", player.getName()),
-                                Pair.of("{amount}", amount)
+                                Pair.of("player", player.getName()),
+                                Pair.of("amount", amount)
                         ));
                     else
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
@@ -100,8 +97,8 @@ public class EcoCommand implements CommandExecutor {
                 case DEPOSIT -> {
                     if (pluginInstance.getEconomyCore().depositPlayer(player.getUniqueId(), amount))
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.depositPlayerSuccess.produce(
-                                Pair.of("{player}", player.getName()),
-                                Pair.of("{amount}", amount)
+                                Pair.of("player", player.getName()),
+                                Pair.of("amount", amount)
                         ));
                     else
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
@@ -109,8 +106,8 @@ public class EcoCommand implements CommandExecutor {
                 case WITHDRAW -> {
                     if (pluginInstance.getEconomyCore().withdrawPlayer(player.getUniqueId(), amount))
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.withdrawPlayerSuccess.produce(
-                                Pair.of("{player}", player.getName()),
-                                Pair.of("{amount}", amount)
+                                Pair.of("player", player.getName()),
+                                Pair.of("amount", amount)
                         ));
                     else
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
@@ -127,7 +124,7 @@ public class EcoCommand implements CommandExecutor {
                 } else {
                     if (pluginInstance.getEconomyCore().setSystemBalance(amount))
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.setSystemBalanceSuccess.produce(
-                                Pair.of("{amount}", amount)
+                                Pair.of("amount", amount)
                         ));
                     else
                         commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
@@ -136,7 +133,7 @@ public class EcoCommand implements CommandExecutor {
             case DEPOSIT -> {
                 if (pluginInstance.getEconomyCore().depositSystemVault(amount))
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.depositSystemSuccess.produce(
-                            Pair.of("{amount}", amount)
+                            Pair.of("amount", amount)
                     ));
                 else
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
@@ -144,7 +141,7 @@ public class EcoCommand implements CommandExecutor {
             case WITHDRAW -> {
                 if (pluginInstance.getEconomyCore().withdrawSystemVault(amount))
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.withdrawSystemSuccess.produce(
-                            Pair.of("{amount}", amount)
+                            Pair.of("amount", amount)
                     ));
                 else
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
