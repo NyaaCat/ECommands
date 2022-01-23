@@ -6,7 +6,7 @@ depend:
   - ECore
 commands:
   pay:
-    usage: /pay <amount|confirm|cancel|help> [player...]
+    usage: /pay <amount|confirm|cancel|show|help> [player...]
     description: Transfer money to other players.
     alias:
       - pay
