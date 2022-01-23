@@ -1,7 +1,8 @@
 package cat.nyaa.ecommands;
 
+import cat.nyaa.ecommands.commands.EcoCommand;
 import cat.nyaa.ecommands.commands.PayCommand;
-import cat.nyaa.ecommands.utils.Lang;
+import cat.nyaa.ecommands.lang.MainLang;
 import cat.nyaa.ecore.EconomyCore;
 import land.melon.lab.simplelanguageloader.SimpleLanguageLoader;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,11 +17,11 @@ public class SpigotLoader extends JavaPlugin {
         this.getDataFolder().mkdir();
         var languageLoader = new SimpleLanguageLoader();
         var languageFile = new File(this.getDataFolder(), "language.json");
-        Lang language = null;
+        MainLang language = null;
         try {
-            language = languageLoader.loadLanguageFile(languageFile, Lang.class);
+            language = languageLoader.loadLanguageFile(languageFile, MainLang.class);
             if (language == null) {
-                language = new Lang();
+                language = new MainLang();
             }
             languageLoader.saveLanguageFile(languageFile, language);
         } catch (IOException e) {
@@ -36,6 +37,6 @@ public class SpigotLoader extends JavaPlugin {
         var economy = economyProvider.getProvider();
 
         Objects.requireNonNull(this.getServer().getPluginCommand("pay")).setExecutor(new PayCommand(language, this, economy));
-//        Objects.requireNonNull(this.getServer().getPluginCommand("eco")).setExecutor(new EcoCommand(language, this, economy));
+        Objects.requireNonNull(this.getServer().getPluginCommand("eco")).setExecutor(new EcoCommand(language, this, economy));
     }
 }

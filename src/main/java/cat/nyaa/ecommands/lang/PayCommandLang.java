@@ -1,11 +1,15 @@
-package cat.nyaa.ecommands.utils;
+package cat.nyaa.ecommands.lang;
 
 import land.melon.lab.simplelanguageloader.components.Text;
 
-public class Lang {
+public class PayCommandLang {
     public Text help = Text.of(
-            "&7/pay: transfer money to other player(s).",
-            "&7 Usage: &f/pay <amount> <player...>"
+            "Usage:",
+            "  /pay <amount> <player...>",
+            "    For example:",
+            "      cat and dog are two players,",
+            "      &n/pay 100 cat&r will pay 100 to player cat (cost 100 + service fee)",
+            "      &n/pay 100 cat dog&r will pay 100 to player cat and 100 to player dog (cost 200 + service fee totally)"
     );
     public Text transferSuccess = Text.of(
             "Done! Totally cost: {totallyCost}",
@@ -14,7 +18,7 @@ public class Lang {
     public Text transferConfirm = Text.of(
             "&7Are you sure you want to transfer {amount} to {receivers}?",
             "&7Totally cost: {totallyCost}(Charged service fee {service_fee}({serviceFeePercent}%))",
-            "balance after transfer: {balanceAfterTransfer}",
+            "&7balance after transfer: {balanceAfterTransfer}",
             "&7Type &b/pay confirm&7 to confirm.",
             "&7Type &c/pay cancel&7 to cancel."
     );
@@ -24,4 +28,5 @@ public class Lang {
     public Text noWaitingForConfirmTransfer = Text.of("&7You have no transfer waiting for your confirm.");
     public Text transferReceiverOffline = Text.of("&7Receiver {receivers} is not online, or you have typed the name incorrectly.");
     public Text insufficientBalance = Text.of("&cInsufficient balance. You need at least {totallyCost} to transfer {amount} to {receivers}.");
+
 }

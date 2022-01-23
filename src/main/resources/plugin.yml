@@ -6,16 +6,21 @@ depend:
   - ECore
 commands:
   pay:
-    usage: /pay <amount> <player...>
+    usage: /pay <amount|confirm|cancel|help> [player...]
     description: Transfer money to other players.
     alias:
       - pay
     permission: ecommands.pay
     permission-message: You don't have permission to use this command.
   eco:
-    usage: /eco <amount>
+    usage: /eco <help|player|system> [deposit|withdraw|set]
     description: administration commands about economy
     alias:
       - eco
     permission: ecommands.eco
     permission-message: You don't have permission to use this command.
+    ecommands:
+      usage: /ecommands reload
+      description: reload the ecommands config(language) file
+      permission: ecommands.reload
+      permission-message: You don't have permission to use this command.

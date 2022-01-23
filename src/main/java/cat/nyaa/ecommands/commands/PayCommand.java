@@ -1,6 +1,6 @@
 package cat.nyaa.ecommands.commands;
 
-import cat.nyaa.ecommands.utils.Lang;
+import cat.nyaa.ecommands.lang.MainLang;
 import cat.nyaa.ecommands.utils.Payment;
 import cat.nyaa.ecore.EconomyCore;
 import land.melon.lab.simplelanguageloader.utils.Pair;
@@ -16,12 +16,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PayCommand implements CommandExecutor {
-    private final Lang languageProvider;
+    private final MainLang languageProvider;
     private final JavaPlugin pluginInstance;
     private final EconomyCore economyProvider;
     private final Map<UUID, Payment> waitingPayments = new HashMap<>();
 
-    public PayCommand(Lang languageProvider, JavaPlugin pluginInstance, EconomyCore economyProvider) {
+    public PayCommand(MainLang languageProvider, JavaPlugin pluginInstance, EconomyCore economyProvider) {
         this.languageProvider = Objects.requireNonNull(languageProvider);
         this.pluginInstance = Objects.requireNonNull(pluginInstance);
         this.economyProvider = Objects.requireNonNull(economyProvider);
@@ -37,17 +37,17 @@ public class PayCommand implements CommandExecutor {
         }
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
-                player.sendMessage(languageProvider.help.produce());
+                player.sendMessage(languageProvider.payCommand.help.produce());
             } else if (args[0].equalsIgnoreCase("confirm")) {
                 if (!waitingPayments.containsKey(player.getUniqueId())) {
-                    player.sendMessage(languageProvider.noWaitingForConfirmTransfer.produce());
+                    player.sendMessage(languageProvider.payCommand.noWaitingForConfirmTransfer.produce());
                     return true;
                 } else {
                     var result = waitingPayments.get(player.getUniqueId()).confirm();
                     if (result.isSuccess()) {
                         var receivers = result.getReceipt().getReceiver().stream()
                                 .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.joining(", "));
-                        player.sendMessage(languageProvider.transferSuccess.produce(
+                        player.sendMessage(languageProvider.payCommand.transferSuccess.produce(
                                 Pair.of("totallyCost", result.getReceipt().getCostTotally()),
                                 Pair.of("amount", result.getReceipt().getAmountPerTransaction()),
                                 Pair.of("receiver", receivers),
@@ -56,16 +56,16 @@ public class PayCommand implements CommandExecutor {
                                 Pair.of("receiptId", Long.toHexString(result.getReceipt().getId()))
                         ));
                     } else {
-                        player.sendMessage(languageProvider.transferFailed.produce());
+                        player.sendMessage(languageProvider.payCommand.transferFailed.produce());
                     }
 
                 }
             } else if (args[0].equalsIgnoreCase("cancel")) {
                 if (!waitingPayments.containsKey(player.getUniqueId())) {
-                    player.sendMessage(languageProvider.noWaitingForConfirmTransfer.produce());
+                    player.sendMessage(languageProvider.payCommand.noWaitingForConfirmTransfer.produce());
                 } else {
                     waitingPayments.remove(player.getUniqueId());
-                    player.sendMessage(languageProvider.transferCancelled.produce());
+                    player.sendMessage(languageProvider.payCommand.transferCancelled.produce());
                 }
                 return true;
             } else {
@@ -76,13 +76,13 @@ public class PayCommand implements CommandExecutor {
             try {
                 amount = Double.parseDouble(args[0]);
             } catch (NumberFormatException e) {
-                player.sendMessage(languageProvider.invalidAmount.produce(
+                player.sendMessage(languageProvider.payCommand.invalidAmount.produce(
                         Pair.of("amount", args[0])
                 ));
                 return true;
             }
             if (amount <= 0) {
-                player.sendMessage(languageProvider.invalidAmount.produce(
+                player.sendMessage(languageProvider.payCommand.invalidAmount.produce(
                         Pair.of("amount", args[0])
                 ));
                 return true;
@@ -98,7 +98,7 @@ public class PayCommand implements CommandExecutor {
                     targets.add(target.getUniqueId());
             }
             if (targetNotOnline.size() > 0) {
-                player.sendMessage(languageProvider.transferReceiverOffline.produce(
+                player.sendMessage(languageProvider.payCommand.transferReceiverOffline.produce(
                         Pair.of("receivers", String.join(", ", targetNotOnline))
                 ));
                 return true;
@@ -108,7 +108,7 @@ public class PayCommand implements CommandExecutor {
             var receivers = targets.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.joining(", "));
             if (economyProvider.getPlayerBalance(player.getUniqueId()) < totallyCost) {
-                player.sendMessage(languageProvider.insufficientBalance.produce(
+                player.sendMessage(languageProvider.payCommand.insufficientBalance.produce(
                         Pair.of("totallyCost", totallyCost),
                         Pair.of("amount", amount),
                         Pair.of("receivers", receivers)
@@ -119,7 +119,7 @@ public class PayCommand implements CommandExecutor {
             var payment = new Payment(player.getUniqueId(), targets,
                     amount * (1 + economyProvider.getTransferFeeRate()), economyProvider);
             waitingPayments.put(player.getUniqueId(), payment);
-            player.sendMessage(languageProvider.transferConfirm.produce(
+            player.sendMessage(languageProvider.payCommand.transferConfirm.produce(
                     Pair.of("amount", amount),
                     Pair.of("receivers", receivers),
                     Pair.of("totallyCost", totallyCost),
