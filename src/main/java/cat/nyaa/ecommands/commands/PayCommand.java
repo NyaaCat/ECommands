@@ -1,5 +1,6 @@
 package cat.nyaa.ecommands.commands;
 
+import cat.nyaa.ecommands.SpigotLoader;
 import cat.nyaa.ecommands.lang.MainLang;
 import cat.nyaa.ecommands.utils.Payment;
 import cat.nyaa.ecore.EconomyCore;
@@ -16,15 +17,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PayCommand implements CommandExecutor {
-    private final MainLang languageProvider;
-    private final JavaPlugin pluginInstance;
-    private final EconomyCore economyProvider;
+    private final SpigotLoader pluginInstance;
     private final Map<UUID, Payment> waitingPayments = new HashMap<>();
 
-    public PayCommand(MainLang languageProvider, JavaPlugin pluginInstance, EconomyCore economyProvider) {
-        this.languageProvider = Objects.requireNonNull(languageProvider);
+    public PayCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = Objects.requireNonNull(pluginInstance);
-        this.economyProvider = Objects.requireNonNull(economyProvider);
     }
 
     // Usage:
@@ -37,17 +34,17 @@ public class PayCommand implements CommandExecutor {
         }
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
-                player.sendMessage(languageProvider.payCommand.help.produce());
+                player.sendMessage(pluginInstance.getMainLang().payCommand.help.produce());
             } else if (args[0].equalsIgnoreCase("confirm")) {
                 if (!waitingPayments.containsKey(player.getUniqueId())) {
-                    player.sendMessage(languageProvider.payCommand.noWaitingForConfirmTransfer.produce());
+                    player.sendMessage(pluginInstance.getMainLang().payCommand.noWaitingForConfirmTransfer.produce());
                     return true;
                 } else {
                     var result = waitingPayments.get(player.getUniqueId()).confirm();
                     if (result.isSuccess()) {
                         var receivers = result.getReceipt().getReceiver().stream()
                                 .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.joining(", "));
-                        player.sendMessage(languageProvider.payCommand.transferSuccess.produce(
+                        player.sendMessage(pluginInstance.getMainLang().payCommand.transferSuccess.produce(
                                 Pair.of("totallyCost", result.getReceipt().getCostTotally()),
                                 Pair.of("amount", result.getReceipt().getAmountPerTransaction()),
                                 Pair.of("receiver", receivers),
@@ -56,16 +53,16 @@ public class PayCommand implements CommandExecutor {
                                 Pair.of("receiptId", Long.toHexString(result.getReceipt().getId()))
                         ));
                     } else {
-                        player.sendMessage(languageProvider.payCommand.transferFailed.produce());
+                        player.sendMessage(pluginInstance.getMainLang().payCommand.transferFailed.produce());
                     }
 
                 }
             } else if (args[0].equalsIgnoreCase("cancel")) {
                 if (!waitingPayments.containsKey(player.getUniqueId())) {
-                    player.sendMessage(languageProvider.payCommand.noWaitingForConfirmTransfer.produce());
+                    player.sendMessage(pluginInstance.getMainLang().payCommand.noWaitingForConfirmTransfer.produce());
                 } else {
                     waitingPayments.remove(player.getUniqueId());
-                    player.sendMessage(languageProvider.payCommand.transferCancelled.produce());
+                    player.sendMessage(pluginInstance.getMainLang().payCommand.transferCancelled.produce());
                 }
                 return true;
             } else {
@@ -76,13 +73,13 @@ public class PayCommand implements CommandExecutor {
             try {
                 amount = Double.parseDouble(args[0]);
             } catch (NumberFormatException e) {
-                player.sendMessage(languageProvider.payCommand.invalidAmount.produce(
+                player.sendMessage(pluginInstance.getMainLang().payCommand.invalidAmount.produce(
                         Pair.of("amount", args[0])
                 ));
                 return true;
             }
             if (amount <= 0) {
-                player.sendMessage(languageProvider.payCommand.invalidAmount.produce(
+                player.sendMessage(pluginInstance.getMainLang().payCommand.invalidAmount.produce(
                         Pair.of("amount", args[0])
                 ));
                 return true;
@@ -98,17 +95,17 @@ public class PayCommand implements CommandExecutor {
                     targets.add(target.getUniqueId());
             }
             if (targetNotOnline.size() > 0) {
-                player.sendMessage(languageProvider.payCommand.transferReceiverOffline.produce(
+                player.sendMessage(pluginInstance.getMainLang().payCommand.transferReceiverOffline.produce(
                         Pair.of("receivers", String.join(", ", targetNotOnline))
                 ));
                 return true;
             }
 
-            var totallyCost = amount * (1 + economyProvider.getTransferFeeRate() * targets.size());
+            var totallyCost = amount * (1 + pluginInstance.getEconomyCore().getTransferFeeRate() * targets.size());
             var receivers = targets.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.joining(", "));
-            if (economyProvider.getPlayerBalance(player.getUniqueId()) < totallyCost) {
-                player.sendMessage(languageProvider.payCommand.insufficientBalance.produce(
+            if (pluginInstance.getEconomyCore().getPlayerBalance(player.getUniqueId()) < totallyCost) {
+                player.sendMessage(pluginInstance.getMainLang().payCommand.insufficientBalance.produce(
                         Pair.of("totallyCost", totallyCost),
                         Pair.of("amount", amount),
                         Pair.of("receivers", receivers)
@@ -117,15 +114,15 @@ public class PayCommand implements CommandExecutor {
             }
 
             var payment = new Payment(player.getUniqueId(), targets,
-                    amount * (1 + economyProvider.getTransferFeeRate()), economyProvider);
+                    amount * (1 + pluginInstance.getEconomyCore().getTransferFeeRate()), pluginInstance.getEconomyCore());
             waitingPayments.put(player.getUniqueId(), payment);
-            player.sendMessage(languageProvider.payCommand.transferConfirm.produce(
+            player.sendMessage(pluginInstance.getMainLang().payCommand.transferConfirm.produce(
                     Pair.of("amount", amount),
                     Pair.of("receivers", receivers),
                     Pair.of("totallyCost", totallyCost),
                     Pair.of("serviceFee", payment.amount() - amount),
-                    Pair.of("serviceFeePercent", economyProvider.getTransferFeeRate() * 100),
-                    Pair.of("balanceAfterTransfer", economyProvider.getPlayerBalance(player.getUniqueId()) - totallyCost)
+                    Pair.of("serviceFeePercent", pluginInstance.getEconomyCore().getTransferFeeRate() * 100),
+                    Pair.of("balanceAfterTransfer", pluginInstance.getEconomyCore().getPlayerBalance(player.getUniqueId()) - totallyCost)
             ));
             return true;
         }
