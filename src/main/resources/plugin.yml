@@ -22,3 +22,8 @@ commands:
     description: reload the ecommands config(language) file
     permission: ecommands.reload
     permission-message: You don't have permission to use this command.
+  balance:
+    usage: /balance [player]
+    description: check player balance
+    permission: ecommands.balance.self
+    permission-message: You don't have permission to use this command.

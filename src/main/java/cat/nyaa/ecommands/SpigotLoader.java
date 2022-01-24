@@ -1,5 +1,6 @@
 package cat.nyaa.ecommands;
 
+import cat.nyaa.ecommands.commands.BalanceCommand;
 import cat.nyaa.ecommands.commands.ECommandsCommand;
 import cat.nyaa.ecommands.commands.EcoCommand;
 import cat.nyaa.ecommands.commands.PayCommand;
@@ -44,6 +45,7 @@ public class SpigotLoader extends JavaPlugin {
         Objects.requireNonNull(this.getServer().getPluginCommand("pay")).setExecutor(new PayCommand(this));
         Objects.requireNonNull(this.getServer().getPluginCommand("eco")).setExecutor(new EcoCommand(this));
         Objects.requireNonNull(this.getServer().getPluginCommand("ecommands")).setExecutor(new ECommandsCommand(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("balance")).setExecutor(new BalanceCommand(this));
     }
 
     public boolean loadLanguage() {
@@ -70,6 +72,7 @@ public class SpigotLoader extends JavaPlugin {
         return true;
     }
 
+    @SuppressWarnings("unused")
     private void IGNORE_RESULT(Object o){
         //ignore
     }

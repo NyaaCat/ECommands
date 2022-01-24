@@ -20,7 +20,7 @@ public class EcoCommandLang {
     );
     public Text consoleOnly = Text.of("This command is too dangerous to execute as a player. Please use console instead.");
     public Text invalidAmount = Text.of("{amount} is not a valid amount.");
-    public Text playerNotExistAbort = Text.of("player {player} does not correspond to any recorded player in the server, abort.");
+    public Text playerNotExistAbort = Text.of("Player {player} does not correspond to any recorded player in the server, abort.");
     public Text setPlayerBalanceSuccess = Text.of("Successfully set the balance of {player} to {amount}.");
     public Text setSystemBalanceSuccess = Text.of("Successfully set the system balance to {amount}.");
     public Text depositPlayerSuccess = Text.of("Successfully deposit {amount} to {player}.");
