@@ -20,7 +20,7 @@ public class PayCommandLang {
             "&7You are transferring {amount} dollar to {receivers}.",
             "&7Estimate arrive: {estimateArrive} Dollars. Charged service fee {serviceFee} Dollars ({serviceFeePercent}%).",
             "&7Totally cost: {totallyCost} Dollars.",
-            "&7balance after transfer: {balanceAfterTransfer}",
+            "&7Your balance after transfer: {balanceAfterTransfer}",
             "&7Type &b/pay confirm&7 to confirm.",
             "&7Type &c/pay cancel&7 to cancel."
     );
@@ -29,6 +29,11 @@ public class PayCommandLang {
     public Text transferFailed = Text.of("&7Transfer failed. It may caused by insufficient balance. Or try again later if you have enough balance.");
     public Text noWaitingForConfirmTransfer = Text.of("&7You have no transfer waiting for your confirm.");
     public Text transferReceiverOffline = Text.of("&7Receiver {receivers} is not online, or you have typed the name incorrectly.");
+    public Text transferReceived = Text.of(
+            "&7You have received {amount} from {sender}, receipt id: 0x{receiptId}",
+            "&7Service fee {serviceFee} Dollars ({serviceFeePercent}%) were automatically charged.",
+            "&7{amountArrive} Dollars were added to your account."
+    );
     public Text insufficientBalance = Text.of("&7Insufficient balance. You need at least {totallyCost} to transfer {amount} to {receivers}.");
 
 }

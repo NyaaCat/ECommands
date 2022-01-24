@@ -51,6 +51,21 @@ public class PayCommand implements CommandExecutor {
                                     Pair.of("serviceFeePercent", result.getReceipt().getFeeRate() * 100),
                                     Pair.of("receiptId", Long.toHexString(result.getReceipt().getId()))
                             ));
+                            result.getReceipt().getReceiver().forEach(uuid -> {
+                                var receiver = Bukkit.getPlayer(uuid);
+                                if (receiver != null) {
+                                    receiver.sendMessage(
+                                            pluginInstance.getMainLang().payCommand.transferReceived.produce(
+                                                    Pair.of("amount", result.getReceipt().getAmountPerTransaction()),
+                                                    Pair.of("sender", player.getName()),
+                                                    Pair.of("receiptId", Long.toHexString(result.getReceipt().getId())),
+                                                    Pair.of("serviceFee", result.getReceipt().getFeePerTransaction()),
+                                                    Pair.of("serviceFeePercent", result.getReceipt().getFeeRate() * 100),
+                                                    Pair.of("amountArrive", result.getReceipt().getAmountArrivePerTransaction())
+                                            )
+                                    );
+                                }
+                            });
                         } else {
                             player.sendMessage(pluginInstance.getMainLang().payCommand.transferFailed.produce());
                         }
