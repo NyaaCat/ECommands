@@ -35,10 +35,10 @@ public class EcoCommand implements CommandExecutor {
                     return false;
                 double amount;
                 try {
-                    amount = Double.parseDouble(args[3]);
+                    amount = Double.parseDouble(args[2]);
                 } catch (NumberFormatException e) {
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("amount", args[3])
+                            Pair.of("amount", args[2])
                     ));
                     return false;
                 }
@@ -59,10 +59,10 @@ public class EcoCommand implements CommandExecutor {
                     return false;
                 double amount;
                 try {
-                    amount = Double.parseDouble(args[3]);
+                    amount = Double.parseDouble(args[2]);
                 } catch (NumberFormatException e) {
                     commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("amount", args[3])
+                            Pair.of("amount", args[2])
                     ));
                     return false;
                 }
@@ -76,7 +76,7 @@ public class EcoCommand implements CommandExecutor {
     }
 
     private void ecoPlayerTask(double amount, TaskType taskType, CommandSender commandSender, String[] args) {
-        for (int i = 2; i < args.length; i++) {
+        for (int i = 3; i < args.length; i++) {
             OfflinePlayer player = getPlayer(args[i]);
             if (!player.hasPlayedBefore()) {
                 commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.playerNotExistAbort.produce(
