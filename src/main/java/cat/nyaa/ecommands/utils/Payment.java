@@ -10,6 +10,5 @@ public record Payment(UUID from, List<UUID> to, double amount,
                       EconomyCore economyCoreInstance) {
     public TradeResult confirm() {
         return economyCoreInstance.playerTransferToMultiple(from, to, amount);
-
     }
 }

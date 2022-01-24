@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
-import java.util.UUID;
 
 public class BalanceCommand implements CommandExecutor {
     private final SpigotLoader pluginInstance;
@@ -50,10 +49,6 @@ public class BalanceCommand implements CommandExecutor {
             ));
         }
         return true;
-    }
-
-    private OfflinePlayer getPlayer(UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid);
     }
 
     @SuppressWarnings("deprecation")
