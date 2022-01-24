@@ -5,11 +5,11 @@ import land.melon.lab.simplelanguageloader.components.Text;
 public class EcoCommandLang {
     public Text help = Text.of(
             "Usage: ",
-            "    /eco system <deposit|withdraw> <amount>",
+            "    /eco system <deposit|withdraw|set> <amount>",
             "      For example: ",
             "        &n/eco system deposit 100&r will deposit 100 to the system account.",
             "        &n/eco system withdraw 100&r will withdraw 100 from the system account.",
-            "    /eco <player> <deposit|withdraw|set> <amount> <players...>",
+            "    /eco player <deposit|withdraw|set> <amount> <players...>",
             "      For example: ",
             "        cat and dog are two players",
             "        &n/eco player deposit 100 cat dog&r will deposit 100 to player cat and dog.",

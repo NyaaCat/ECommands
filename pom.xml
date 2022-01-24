@@ -38,19 +38,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.moandjiezana.toml</groupId>
-            <artifactId>toml4j</artifactId>
-            <version>0.7.2</version>
-        </dependency>
-        <dependency>
             <groupId>cat.nyaa</groupId>
             <artifactId>ecore</artifactId>
-            <version>0.0.6</version>
+            <version>0.0.7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>land.melon.lab</groupId>
             <artifactId>SimpleLanguageLoader</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

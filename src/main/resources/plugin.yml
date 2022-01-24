@@ -4,23 +4,21 @@ version: ${project.version}
 api-version: 1.18
 depend:
   - ECore
+softdepend:
+  - Essentials
 commands:
   pay:
     usage: /pay <amount|confirm|cancel|show|help> [player...]
     description: Transfer money to other players.
-    alias:
-      - pay
     permission: ecommands.pay
     permission-message: You don't have permission to use this command.
   eco:
-    usage: /eco <help|player|system> [deposit|withdraw|set]
+    usage: /eco <player|system> <deposit|withdraw|set> <amount> [players...]
     description: administration commands about economy
-    alias:
-      - eco
     permission: ecommands.eco
     permission-message: You don't have permission to use this command.
-    ecommands:
-      usage: /ecommands reload
-      description: reload the ecommands config(language) file
-      permission: ecommands.reload
-      permission-message: You don't have permission to use this command.
+  ecommands:
+    usage: /ecommands reload
+    description: reload the ecommands config(language) file
+    permission: ecommands.reload
+    permission-message: You don't have permission to use this command.
