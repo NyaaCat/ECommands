@@ -36,16 +36,16 @@ public class SpigotLoader extends JavaPlugin {
             return;
         }
 
-        if(!loadEconomyCore()){
+        if (!loadEconomyCore()) {
             getLogger().severe("Failed to load EconomyCore!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        Objects.requireNonNull(this.getServer().getPluginCommand("pay")).setExecutor(new PayCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("eco")).setExecutor(new EcoCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands")).setExecutor(new ECommandsCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("balance")).setExecutor(new BalanceCommand(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:pay")).setExecutor(new PayCommand(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:eco")).setExecutor(new EcoCommand(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:ecommands")).setExecutor(new ECommandsCommand(this));
+        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:balance")).setExecutor(new BalanceCommand(this));
     }
 
     public boolean loadLanguage() {

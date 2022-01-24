@@ -7,14 +7,14 @@ public class EcoCommandLang {
             "&7Usage: ",
             "&7    /eco system <deposit|withdraw|set> <amount>",
             "&7      For example: ",
-            "&7        &n/eco system deposit 100&r will deposit 100 to the system account.",
-            "&7        &n/eco system withdraw 100&r will withdraw 100 from the system account.",
+            "&7        &n/eco system deposit 100&7 will deposit 100 to the system account.",
+            "&7        &n/eco system withdraw 100&7 will withdraw 100 from the system account.",
             "&7    /eco player <deposit|withdraw|set> <amount> <players...>",
             "&7      For example: ",
             "&7        cat and dog are two players",
-            "&7        &n/eco player deposit 100 cat dog&r will deposit 100 to player cat and dog.",
-            "&7        &n/eco player withdraw 100 cat&r will withdraw 100 from dog.",
-            "&7        &n/eco player set 100 cat&r will set the balance of cat to 100.",
+            "&7        &n/eco player deposit 100 cat dog&7 will deposit 100 to player cat and dog.",
+            "&7        &n/eco player withdraw 100 cat&7 will withdraw 100 from dog.",
+            "&7        &n/eco player set 100 cat&7 will set the balance of cat to 100.",
             "&7Attention: all the command above will NOT change the balance of the player who issue the commands," +
                     "withdraw means add and deposit means subtract."
     );
