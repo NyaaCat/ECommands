@@ -17,7 +17,7 @@ public class PayCommandLang {
             "&7Successfully transferred {amount} to {receivers}, charged service fee {serviceFee} ({serviceFeePercent}%)."
     );
     public Text transferConfirm = Text.of(
-            "&7You are transferring {amount} dollar to {receivers}.",
+            "&7You are transferring {amount} dollars to {receivers}.",
             "&7Estimate arrive: {estimateArrive} Dollars. Charged service fee {serviceFee} Dollars ({serviceFeePercent}%).",
             "&7Totally cost: {totallyCost} Dollars.",
             "&7Your balance after transfer: {balanceAfterTransfer}",

@@ -55,18 +55,37 @@ public class EcoCommand implements CommandExecutor {
                 return true;
             }
             case "system" -> {
-                if (args.length < 3)
-                    return false;
-                double amount;
-                try {
-                    amount = Double.parseDouble(args[2]);
-                } catch (NumberFormatException e) {
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("amount", args[2])
-                    ));
+                if (args.length < 2) {
                     return false;
                 }
-                ecoSystemTask(amount, TaskType.valueOf(args[1].toUpperCase()), commandSender);
+                if (args[1].equalsIgnoreCase("balance")) {
+                    commandSender.sendMessage(
+                            pluginInstance.getMainLang().ecoCommand.systemBalance.produce(
+                                    Pair.of("amount", pluginInstance.getEconomyCore().getSystemBalance())
+                            )
+                    );
+                } else {
+                    if (args.length < 3)
+                        return false;
+                    double amount;
+                    try {
+                        amount = Double.parseDouble(args[2]);
+                    } catch (NumberFormatException e) {
+                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
+                                Pair.of("amount", args[2])
+                        ));
+                        return false;
+                    }
+                    try {
+                        ecoSystemTask(amount, TaskType.valueOf(args[1].toUpperCase()), commandSender);
+                    } catch (IllegalArgumentException e) {
+                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationInvalid.produce(
+                                Pair.of("operation", args[1]),
+                                Pair.of("operations", String.join(", ", Arrays.stream(TaskType.values()).map(item -> item.name().toLowerCase()).toArray(String[]::new)))
+                        ));
+                        return false;
+                    }
+                }
                 return true;
             }
             default -> {
