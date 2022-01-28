@@ -50,11 +50,11 @@ public class SpigotLoader extends JavaPlugin {
 
     public boolean loadLanguage() {
         try {
-            mainLang = languageLoader.loadLanguageFile(languageFile, MainLang.class);
+            mainLang = languageLoader.loadFromFile(languageFile, MainLang.class);
             if (mainLang == null) {
                 mainLang = new MainLang();
             }
-            languageLoader.saveLanguageFile(languageFile, mainLang);
+            languageLoader.saveToFile(languageFile, mainLang);
             return true;
         } catch (IOException e) {
             e.printStackTrace();

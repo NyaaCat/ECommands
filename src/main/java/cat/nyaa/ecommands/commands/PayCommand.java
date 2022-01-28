@@ -3,6 +3,8 @@ package cat.nyaa.ecommands.commands;
 import cat.nyaa.ecommands.SpigotLoader;
 import cat.nyaa.ecommands.utils.Payment;
 import land.melon.lab.simplelanguageloader.utils.Pair;
+import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,9 +18,18 @@ import java.util.stream.Collectors;
 public class PayCommand implements CommandExecutor {
     private final SpigotLoader pluginInstance;
     private final Map<UUID, Payment> waitingPayments = new HashMap<>();
+    private final BaseComponent confirmButton;
+    private final BaseComponent cancelButton;
 
     public PayCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = Objects.requireNonNull(pluginInstance);
+
+        confirmButton = new TextComponent(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.confirmButtonText.produce()));
+        confirmButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.confirmButtonHoverText.produce()))));
+        confirmButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/pay confirm"));
+        cancelButton = new TextComponent(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.cancelButtonText.produce()));
+        cancelButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.cancelButtonHoverText.produce()))));
+        cancelButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/pay cancel"));
     }
 
     // Usage:
@@ -86,7 +97,7 @@ public class PayCommand implements CommandExecutor {
                         player.sendMessage(pluginInstance.getMainLang().payCommand.noWaitingForConfirmTransfer.produce());
                     }else{
                         var payment = waitingPayments.get(player.getUniqueId());
-                        player.sendMessage(paymentCheckMessage(payment));
+                        player.spigot().sendMessage(paymentCheckMessage(payment));
                     }
                     return true;
                 }
@@ -140,28 +151,30 @@ public class PayCommand implements CommandExecutor {
             var payment = new Payment(player.getUniqueId(), targets,
                     amount, pluginInstance.getEconomyCore());
             waitingPayments.put(player.getUniqueId(), payment);
-            player.sendMessage(paymentCheckMessage(payment));
+            player.spigot().sendMessage(paymentCheckMessage(payment));
             return true;
         } else {
             return false;
         }
     }
 
-    private String paymentCheckMessage(Payment payment) {
+    private BaseComponent paymentCheckMessage(Payment payment) {
         var receivers = payment.to().stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
                 .collect(Collectors.joining(", "));
         var amount = payment.amount();
         var serviceFee = payment.amount() * pluginInstance.getEconomyCore().getTransferFeeRate();
         var estimateArrive = payment.amount() - serviceFee;
         var amountTotal = payment.amount() * payment.to().size();
-        return pluginInstance.getMainLang().payCommand.transferConfirm.produce(
+        return pluginInstance.getMainLang().payCommand.transferConfirm.produceWithBaseComponent(
                 Pair.of("amount", amount),
                 Pair.of("receivers", receivers),
                 Pair.of("totallyCost", amountTotal),
                 Pair.of("estimateArrive", estimateArrive),
                 Pair.of("serviceFee", serviceFee),
                 Pair.of("serviceFeePercent", pluginInstance.getEconomyCore().getTransferFeeRate() * 100),
-                Pair.of("balanceAfterTransfer", pluginInstance.getEconomyCore().getPlayerBalance(payment.from()) - amountTotal)
+                Pair.of("balanceAfterTransfer", pluginInstance.getEconomyCore().getPlayerBalance(payment.from()) - amountTotal),
+                Pair.of("confirmButton", confirmButton),
+                Pair.of("cancelButton", cancelButton)
         );
     }
 
