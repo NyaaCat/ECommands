@@ -22,6 +22,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>nyaa-repo</id>
+            <url>https://ci.nyaacat.com/maven</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -40,7 +44,7 @@
         <dependency>
             <groupId>cat.nyaa</groupId>
             <artifactId>ecore</artifactId>
-            <version>0.1.7</version>
+            <version>0.1.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
