@@ -3,7 +3,10 @@ package cat.nyaa.ecommands.commands;
 import cat.nyaa.ecommands.SpigotLoader;
 import cat.nyaa.ecommands.utils.Payment;
 import land.melon.lab.simplelanguageloader.utils.Pair;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -47,9 +50,8 @@ public class PayCommand implements CommandExecutor {
                     return true;
                 }
                 case "confirm" -> {
-                    if (!waitingPayments.containsKey(player.getUniqueId())) {
-                        player.sendMessage(pluginInstance.getMainLang().payCommand.noWaitingForConfirmTransfer.produce());
-                    } else {
+                    var payment = waitingPayments.remove(player.getUniqueId());
+                    if (payment != null) {
                         var result = waitingPayments.get(player.getUniqueId()).confirm();
                         if (result.isSuccess()) {
                             var receivers = result.getReceipt().getReceiver().stream()
@@ -77,9 +79,12 @@ public class PayCommand implements CommandExecutor {
                                     );
                                 }
                             });
+                            waitingPayments.remove(player.getUniqueId());
                         } else {
                             player.sendMessage(pluginInstance.getMainLang().payCommand.transferFailed.produce());
                         }
+                    } else {
+                        player.sendMessage(pluginInstance.getMainLang().payCommand.noWaitingForConfirmTransfer.produce());
                     }
                     return true;
                 }
