@@ -9,9 +9,9 @@ public class EcoCommandLang {
             "&8    Note: use &u$system&8 to refer to the system vault",
             "&7      For example: ",
             "&7        &n/eco add add 100 $system&7 will add 100{currencyUnit} to the system account.",
-            "&7        &n/eco remove 100 $system&7 will deduct 100 from the system account.",
-            "&7        &n/eco transfer 100 cat $system&7 will transfer 100 to {systemVaultName} from cat's vault.",
-            "&7        &n/eco set 100 cat&7 will set the balance of cat's vault to 100.",
+            "&7        &n/eco remove 100 $system&7 will deduct 100{currencyUnit}  from the system account.",
+            "&7        &n/eco transfer 100 cat $system&7 will transfer 100{currencyUnit}  to {systemVaultName} from cat's vault.",
+            "&7        &n/eco set 100 cat&7 will set the balance of cat's vault to 100{currencyUnit} .",
             "&7        &8Note: you can only set the balance of system vault via console."
     );
     public Text consoleOnly = Text.of("&7This command is too dangerous to execute as a player. Please use console instead.");

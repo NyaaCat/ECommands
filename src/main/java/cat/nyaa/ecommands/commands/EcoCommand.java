@@ -22,7 +22,10 @@ public class EcoCommand implements CommandExecutor {
     public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
         if (args.length < 3) {
             commandSender.sendMessage(
-                    pluginInstance.getMainLang().ecoCommand.help.produce()
+                    pluginInstance.getMainLang().ecoCommand.help.produce(
+                            Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural()),
+                            Pair.of("systemVaultName", pluginInstance.getEconomyCore().systemVaultName())
+                    )
             );
         } else {
             // /eco <transfer|add|remove|set> <amount> <vault> [targetVault]
