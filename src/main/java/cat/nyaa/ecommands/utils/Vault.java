@@ -29,6 +29,7 @@ public class Vault {
         this.economyCore = economyCore;
     }
 
+    @SuppressWarnings("deprecation")
     public static Vault of(String name, EconomyCore economyCore) {
         if (name.equalsIgnoreCase("$system")) {
             return new Vault(null, true, economyCore);
@@ -36,6 +37,10 @@ public class Vault {
             var player = Objects.requireNonNullElse(Bukkit.getPlayerExact(name), Bukkit.getOfflinePlayer(name));
             return new Vault(player, false, economyCore);
         }
+    }
+
+    public static Vault of(UUID vaultUUID, EconomyCore economyCore) {
+        return new Vault(Bukkit.getOfflinePlayer(vaultUUID), false, economyCore);
     }
 
     public boolean add(double amount) {
