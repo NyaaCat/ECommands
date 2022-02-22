@@ -52,7 +52,7 @@ public class PayCommand implements CommandExecutor {
                 case "confirm" -> {
                     var payment = waitingPayments.remove(player.getUniqueId());
                     if (payment != null) {
-                        var result = waitingPayments.get(player.getUniqueId()).confirm();
+                        var result = payment.confirm();
                         if (result.isSuccess()) {
                             var receivers = result.getReceipt().getReceiver().stream()
                                     .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.joining(", "));
