@@ -13,7 +13,7 @@ commands:
     permission: ecommands.pay
     permission-message: You don't have permission to use this command.
   eco:
-    usage: /eco <player|system> <deposit|withdraw|set> <amount> [players...]
+    usage: /eco <transfer|add|remove|set> <amount> <vault> [targetVault]
     description: administration commands about economy
     permission: ecommands.eco
     permission-message: You don't have permission to use this command.

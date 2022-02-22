@@ -1,18 +1,15 @@
 package cat.nyaa.ecommands.commands;
 
 import cat.nyaa.ecommands.SpigotLoader;
+import cat.nyaa.ecommands.utils.Vault;
 import land.melon.lab.simplelanguageloader.utils.Pair;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
 
 public class EcoCommand implements CommandExecutor {
     private final SpigotLoader pluginInstance;
@@ -23,162 +20,175 @@ public class EcoCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
-        if (args.length < 1) {
-            return false;
-        } else switch (args[0]) {
-            case "help" -> {
-                commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.help.produce());
-                return true;
-            }
-            case "player" -> {
-                if (args.length < 4)
-                    return false;
-                double amount;
-                try {
-                    amount = Double.parseDouble(args[2]);
-                } catch (NumberFormatException e) {
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                            Pair.of("amount", args[2])
-                    ));
-                    return false;
-                }
-                try {
-                    ecoPlayerTask(amount, TaskType.valueOf(args[1].toUpperCase()), commandSender, args);
-                } catch (IllegalArgumentException e) {
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationInvalid.produce(
-                            Pair.of("operation", args[1]),
-                            Pair.of("Operations", String.join(", ", Arrays.stream(TaskType.values()).map(item -> item.name().toLowerCase()).toArray(String[]::new)))
-                    ));
-                    return false;
-                }
-                commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.tasksDone.produce());
-                return true;
-            }
-            case "system" -> {
-                if (args.length < 2) {
-                    return false;
-                }
-                if (args[1].equalsIgnoreCase("balance")) {
-                    commandSender.sendMessage(
-                            pluginInstance.getMainLang().ecoCommand.systemBalance.produce(
-                                    Pair.of("amount", pluginInstance.getEconomyCore().getSystemBalance())
-                            )
-                    );
-                } else {
-                    if (args.length < 3)
-                        return false;
-                    double amount;
-                    try {
-                        amount = Double.parseDouble(args[2]);
-                    } catch (NumberFormatException e) {
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
-                                Pair.of("amount", args[2])
-                        ));
-                        return false;
-                    }
-                    try {
-                        ecoSystemTask(amount, TaskType.valueOf(args[1].toUpperCase()), commandSender);
-                    } catch (IllegalArgumentException e) {
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationInvalid.produce(
-                                Pair.of("operation", args[1]),
-                                Pair.of("operations", String.join(", ", Arrays.stream(TaskType.values()).map(item -> item.name().toLowerCase()).toArray(String[]::new)))
-                        ));
-                        return false;
-                    }
-                }
-                return true;
-            }
-            default -> {
-                return false;
-            }
-        }
-    }
+        if (args.length < 3) {
+            commandSender.sendMessage(
+                    pluginInstance.getMainLang().ecoCommand.help.produce()
+            );
+        } else {
+            // /eco <transfer|add|remove|set> <amount> <vault> [targetVault]
+            Operations operation;
+            double amount;
+            Vault vault;
+            Vault targetVault = null;
 
-    private void ecoPlayerTask(double amount, TaskType taskType, CommandSender commandSender, String[] args) {
-        for (int i = 3; i < args.length; i++) {
-            OfflinePlayer player = getPlayer(args[i]);
-            if (!player.hasPlayedBefore()) {
+            try {
+                operation = Operations.valueOf(args[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                commandSender.sendMessage(
+                        pluginInstance.getMainLang().ecoCommand.operationInvalid.produce(
+                                Pair.of("operation", args[0]),
+                                Pair.of("operations", String.join(", ", Arrays.stream(Operations.values()).map(Operations::name).toArray(String[]::new)))
+                        )
+                );
+                return true;
+            }
+
+            try {
+                amount = Double.parseDouble(args[1]);
+            } catch (NumberFormatException e) {
+                commandSender.sendMessage(
+                        pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
+                                Pair.of("amount", args[1])
+                        )
+                );
+                return true;
+            }
+
+            try {
+                vault = Vault.of(args[2].toUpperCase(), pluginInstance.getEconomyCore());
+            } catch (Exception e) {
                 commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.playerNotExistAbort.produce(
-                        Pair.of("player", args[i])
+                        Pair.of("player", args[2])
                 ));
-                continue;
+                return true;
             }
-            switch (taskType) {
+
+            if (operation == Operations.TRANSFER) {
+                try {
+                    targetVault = Vault.of(args[3].toUpperCase(), pluginInstance.getEconomyCore());
+                } catch (Exception e1) {
+                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.playerNotExistAbort.produce(
+                            Pair.of("player", args[3])
+                    ));
+                    return true;
+                }
+            }
+
+            switch (operation) {
+                case TRANSFER -> {
+                    if (vault.remove(amount)) {
+                        var success = targetVault.add(amount);
+                        if (!success) {
+                            var rollbackSuccess = vault.add(amount);
+                            if (!rollbackSuccess) {
+                                var exception = new RuntimeException("Rollback failure: failed to pay " + amount + " to " + targetVault.name + ". Already removed " + amount + " from " + vault.name + " but failed to rollback.");
+                                commandSender.sendMessage(
+                                        pluginInstance.getMainLang().ecoCommand.exceptionOccurred.produce(
+                                                Pair.of("exception", exception.toString())
+                                        )
+                                );
+                                throw exception;
+                            }
+                        }
+                        if (!success) {
+                            commandSender.sendMessage(
+                                    pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
+                                            Pair.of("operation", operation.name().toLowerCase()),
+                                            Pair.of("player", vault.name)
+                                    )
+                            );
+                        } else {
+                            commandSender.sendMessage(
+                                    pluginInstance.getMainLang().ecoCommand.transferSuccess.produce(
+                                            Pair.of("amount", amount),
+                                            Pair.of("payer", vault.name),
+                                            Pair.of("payerBalance", vault.balance()),
+                                            Pair.of("receiver", targetVault.name),
+                                            Pair.of("receiverBalance", targetVault.balance()),
+                                            Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
+                                    )
+                            );
+                        }
+                    } else {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
+                                        Pair.of("operation", operation.name().toLowerCase()),
+                                        Pair.of("player", vault.name)
+                                )
+                        );
+                    }
+                }
+                case ADD -> {
+                    var success = vault.add(amount);
+                    if (success) {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.addBalanceSuccess.produce(
+                                        Pair.of("amount", amount),
+                                        Pair.of("player", vault.name),
+                                        Pair.of("balance", vault.balance()),
+                                        Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
+                                )
+                        );
+                    } else {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
+                                        Pair.of("operation", operation.name().toLowerCase()),
+                                        Pair.of("player", vault.name)
+                                )
+                        );
+                    }
+                }
+                case REMOVE -> {
+                    var success = vault.remove(amount);
+                    if (success) {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.removeBalanceSuccess.produce(
+                                        Pair.of("amount", amount),
+                                        Pair.of("player", vault.name),
+                                        Pair.of("balance", vault.balance()),
+                                        Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
+                                )
+                        );
+                    } else {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
+                                        Pair.of("operation", operation.name().toLowerCase()),
+                                        Pair.of("player", vault.name)
+                                )
+                        );
+                    }
+                }
                 case SET -> {
-                    if (pluginInstance.getEconomyCore().setPlayerBalance(player.getUniqueId(), amount))
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.setPlayerBalanceSuccess.produce(
-                                Pair.of("player", player.getName()),
-                                Pair.of("amount", amount)
-                        ));
-                    else
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
-                }
-                case DEPOSIT -> {
-                    if (pluginInstance.getEconomyCore().depositPlayer(player.getUniqueId(), amount))
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.depositPlayerSuccess.produce(
-                                Pair.of("player", player.getName()),
-                                Pair.of("amount", amount)
-                        ));
-                    else
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
-                }
-                case WITHDRAW -> {
-                    if (pluginInstance.getEconomyCore().withdrawPlayer(player.getUniqueId(), amount))
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.withdrawPlayerSuccess.produce(
-                                Pair.of("player", player.getName()),
-                                Pair.of("amount", amount)
-                        ));
-                    else
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
+                    if(commandSender instanceof Player && vault.isSystemVault){
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.consoleOnly.produce()
+                        );
+                        break;
+                    }
+                    var success = vault.set(amount);
+                    if (success) {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.setBalanceSuccess.produce(
+                                        Pair.of("amount", amount),
+                                        Pair.of("player", vault.name),
+                                        Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
+                                )
+                        );
+                    } else {
+                        commandSender.sendMessage(
+                                pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
+                                        Pair.of("operation", operation.name().toLowerCase()),
+                                        Pair.of("player", vault.name)
+                                )
+                        );
+                    }
                 }
             }
         }
+        return true;
     }
 
-    private void ecoSystemTask(double amount, TaskType taskType, CommandSender commandSender) {
-        switch (taskType) {
-            case SET -> {
-                if (!(commandSender instanceof ConsoleCommandSender)) {
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.consoleOnly.produce());
-                } else {
-                    if (pluginInstance.getEconomyCore().setSystemBalance(amount))
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.setSystemBalanceSuccess.produce(
-                                Pair.of("amount", amount)
-                        ));
-                    else
-                        commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
-                }
-            }
-            case DEPOSIT -> {
-                if (pluginInstance.getEconomyCore().depositSystemVault(amount))
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.depositSystemSuccess.produce(
-                            Pair.of("amount", amount)
-                    ));
-                else
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
-            }
-            case WITHDRAW -> {
-                if (pluginInstance.getEconomyCore().withdrawSystemVault(amount))
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.withdrawSystemSuccess.produce(
-                            Pair.of("amount", amount)
-                    ));
-                else
-                    commandSender.sendMessage(pluginInstance.getMainLang().ecoCommand.operationFailure.produce());
-            }
-        }
-    }
-
-    enum TaskType {
-        SET, DEPOSIT, WITHDRAW
-    }
-
-    private OfflinePlayer getPlayer(UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid);
-    }
-
-    @SuppressWarnings("deprecation")
-    private OfflinePlayer getPlayer(String name) {
-        return Objects.requireNonNullElseGet(Bukkit.getPlayer(name), () -> Bukkit.getOfflinePlayer(name));
-        //inevitable deprecated api call
+    enum Operations {
+        TRANSFER, ADD, REMOVE, SET
     }
 }
