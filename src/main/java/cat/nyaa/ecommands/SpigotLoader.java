@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 public class SpigotLoader extends JavaPlugin {
     private final SimpleLanguageLoader languageLoader = new SimpleLanguageLoader();
@@ -36,17 +35,28 @@ public class SpigotLoader extends JavaPlugin {
             return;
         }
 
-        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:pay")).setExecutor(new PayCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:eco")).setExecutor(new EcoCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:ecommands")).setExecutor(new ECommandsCommand(this));
-        Objects.requireNonNull(this.getServer().getPluginCommand("ecommands:balance")).setExecutor(new BalanceCommand(this));
+        var payTabCommand = new PayCommand(this);
+        var ecoTabCommand = new EcoCommand(this);
+        var ecommandsTabCommand = new ECommandsCommand(this);
+        var balanceTabCommand = new BalanceCommand(this);
 
         getServer().getScheduler().runTaskLater(this, () -> {
+            this.getServer().getPluginCommand("pay").setExecutor(payTabCommand);
+            this.getServer().getPluginCommand("pay").setTabCompleter(payTabCommand);
+
+            this.getServer().getPluginCommand("eco").setExecutor(ecoTabCommand);
+            this.getServer().getPluginCommand("eco").setTabCompleter(ecoTabCommand);
+
+            this.getServer().getPluginCommand("ecommands").setExecutor(ecommandsTabCommand);
+            this.getServer().getPluginCommand("ecommands").setTabCompleter(ecommandsTabCommand);
+
+            this.getServer().getPluginCommand("balance").setExecutor(balanceTabCommand);
+            this.getServer().getPluginCommand("balance").setTabCompleter(balanceTabCommand);
             if (!loadEconomyCore()) {
                 getLogger().severe("Failed to load EconomyCore!");
                 this.getServer().getPluginManager().disablePlugin(this);
             }
-        },1);
+        }, 1);
     }
 
     public boolean loadLanguage() {
@@ -74,7 +84,7 @@ public class SpigotLoader extends JavaPlugin {
     }
 
     @SuppressWarnings("unused")
-    private void IGNORE_RESULT(Object o){
+    private void IGNORE_RESULT(Object o) {
         //ignore
     }
 }

@@ -2,12 +2,13 @@ package cat.nyaa.ecommands.commands;
 
 import cat.nyaa.ecommands.SpigotLoader;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
-public class ECommandsCommand implements CommandExecutor {
+public class ECommandsCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
 
     public ECommandsCommand(SpigotLoader pluginInstance) {
@@ -25,15 +26,21 @@ public class ECommandsCommand implements CommandExecutor {
                 commandSender.sendMessage(pluginInstance.getMainLang().eCommandsCommand.done.produce());
             else
                 commandSender.sendMessage(pluginInstance.getMainLang().eCommandsCommand.failure.produce());
-
             commandSender.sendMessage(pluginInstance.getMainLang().eCommandsCommand.reloadECore.produce());
             if (pluginInstance.loadEconomyCore())
                 commandSender.sendMessage(pluginInstance.getMainLang().eCommandsCommand.done.produce());
             else
                 commandSender.sendMessage(pluginInstance.getMainLang().eCommandsCommand.failure.produce());
-
             return true;
         } else
             return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
+        if (strings.length == 0) {
+            return List.of("reload");
+        }
+        return null;
     }
 }

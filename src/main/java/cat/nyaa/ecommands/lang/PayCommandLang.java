@@ -16,11 +16,11 @@ public class PayCommandLang {
             "&7Successfully transferred {amount} to {receivers}, charged service fee {serviceFee} ({serviceFeePercent}%)."
     );
     public Text transferConfirm = Text.of(
-            "&7You are transferring {amount} Dollars to {receivers}.",
-            "&7Estimate arrive: {estimateArrive} Dollars. Charged service fee {serviceFee} Dollars ({serviceFeePercent}%).",
-            "&7Your balance after transfer: {balanceAfterTransfer}",
-            "&7Do you want to continue&8?  {confirmButton} {cancelButton}"
+            "&7You are transferring {amount}{currencyUnit} to {receivers}.",
+            "&7Estimate arrive: {estimateArrive}{currencyUnit}. Charged service fee {serviceFee}{currencyUnit} ({serviceFeePercent}%).",
+            "&7Your balance after transfer: {balanceAfterTransfer}"
     );
+    public Text transferConfirmButton = Text.of("&7Do you want to continue&8?  {confirmButton} {cancelButton}");
     public Text confirmButtonText = Text.of("&7[&#79a15fYes&7]");
     public Text confirmButtonHoverText = Text.of("&#79a15f/pay confirm");
     public Text cancelButtonText = Text.of("&7[&#a15f5fNo&7]");
@@ -32,8 +32,8 @@ public class PayCommandLang {
     public Text transferReceiverOffline = Text.of("&7Receiver {receivers} is not online, or you have typed the name incorrectly.");
     public Text transferReceived = Text.of(
             "&7You have received {amount} from {sender}, receipt id: 0x{receiptId}",
-            "&7Service fee {serviceFee} Dollars ({serviceFeePercent}%) were automatically charged.",
-            "&7{amountArrive} Dollars were added to your account."
+            "&7Service fee {serviceFee}{currencyUnit} ({serviceFeePercent}%) were automatically charged.",
+            "&7{amountArrive}{currencyUnit} were added to your account."
     );
     public Text insufficientBalance = Text.of("&7Insufficient balance. You need at least {totallyCost} to transfer {amount} to {receivers}.");
 }

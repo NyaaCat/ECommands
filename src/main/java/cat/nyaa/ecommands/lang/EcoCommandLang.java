@@ -15,7 +15,7 @@ public class EcoCommandLang {
             "&7        &8Note: you can only set the balance of system vault via console."
     );
     public Text consoleOnly = Text.of("&7This command is too dangerous to execute as a player. Please use console instead.");
-    public Text invalidAmount = Text.of("&7{amount} is not a valid amount.");
+    public Text invalidAmount = Text.of("&7{amount} is not a valid amount or amount express (<percentInDouble>:<min>:<max>:<user>).");
     public Text playerNotExistAbort = Text.of("&7Player {player} does not correspond to any recorded player in the server.");
     public Text setBalanceSuccess = Text.of("&7Successfully set the balance of {player} to {amount}{currencyUnit}.");
     public Text transferSuccess = Text.of("&7Successfully transfer {amount}{currencyUnit} from {payer} to {receiver}. New balance of {payer} is {payerBalance}{currencyUnit} and of {receiver} is {receiverBalance}{currencyUnit}.");

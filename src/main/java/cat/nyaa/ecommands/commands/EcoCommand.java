@@ -3,16 +3,21 @@ package cat.nyaa.ecommands.commands;
 import cat.nyaa.ecommands.SpigotLoader;
 import cat.nyaa.ecommands.utils.Vault;
 import land.melon.lab.simplelanguageloader.utils.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class EcoCommand implements CommandExecutor {
+public class EcoCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
+    private final List<String> operations = Arrays.stream(Operations.values()).map((element) -> element.name().toLowerCase()).collect(Collectors.toList());
 
     public EcoCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -47,8 +52,18 @@ public class EcoCommand implements CommandExecutor {
             }
 
             try {
-                amount = Double.parseDouble(args[1]);
-            } catch (NumberFormatException e) {
+                var splited = args[1].split(":");
+                if (splited.length == 4) {
+                    var percent = Double.parseDouble(splited[0]);
+                    var min = Double.parseDouble(splited[1]);
+                    var max = Double.parseDouble(splited[2]);
+                    var vaultReadOnly = Vault.of(splited[3], pluginInstance.getEconomyCore());
+                    var expect = vaultReadOnly.balance() * percent;
+                    amount = Math.max(Math.min(max, expect), min);
+                } else {
+                    amount = Double.parseDouble(args[1]);
+                }
+            } catch (IllegalArgumentException e) {
                 commandSender.sendMessage(
                         pluginInstance.getMainLang().ecoCommand.invalidAmount.produce(
                                 Pair.of("amount", args[1])
@@ -162,7 +177,7 @@ public class EcoCommand implements CommandExecutor {
                     }
                 }
                 case SET -> {
-                    if(commandSender instanceof Player && vault.isSystemVault){
+                    if (commandSender instanceof Player && vault.isSystemVault) {
                         commandSender.sendMessage(
                                 pluginInstance.getMainLang().ecoCommand.consoleOnly.produce()
                         );
@@ -189,6 +204,28 @@ public class EcoCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
+        if (strings.length < 2) {
+            return operations;
+        }
+        if (!operations.contains(strings[0])) {
+            return null;
+        }
+        if (strings.length == 2) {
+            return List.of("<amount>");
+        }
+        var vaultList = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)); //confused
+        vaultList.add("$system");
+        if (strings.length == 3) {
+            return vaultList;
+        }
+        if (strings.length == 4 && strings[0].equalsIgnoreCase("transfer")) {
+            return vaultList;
+        }
+        return null;
     }
 
     enum Operations {

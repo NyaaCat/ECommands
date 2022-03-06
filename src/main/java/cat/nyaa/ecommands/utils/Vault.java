@@ -12,11 +12,12 @@ public class Vault {
     public final EconomyCore economyCore;
     public final UUID vaultUUID;
     public final String name;
+
     private Vault(OfflinePlayer player, boolean isSystemVault, EconomyCore economyCore) {
         this.isSystemVault = isSystemVault;
         if (!isSystemVault) {
             assert player != null;
-            if(!player.hasPlayedBefore()){
+            if (!player.hasPlayedBefore()) {
                 throw new IllegalArgumentException("Player not found");
             }
             this.vaultUUID = player.getUniqueId();
