@@ -8,8 +8,8 @@ public class PayCommandLang {
             "&7  /pay <amount> <player...>",
             "&7    For example:",
             "&7      cat and dog are two players,",
-            "&7      &n/pay 100 cat&7 will pay 100 to player cat (cost 100 + service fee)",
-            "&7      &n/pay 100 cat dog&7 will pay 100 to player cat and 100 to player dog (cost 200 + service fee totally)"
+            "&7      &n/pay 100 cat&7 will pay 100 to player cat (arrival &n100 - service fee&r&7)",
+            "&7      &n/pay 100 cat dog&7 will pay 100 to player cat and 100 to player dog (cost 200 totally)"
     );
     public Text transferSuccess = Text.of(
             "&#79a15fDone! &7Receipt id: &#5f7fa10x{receiptId}",
