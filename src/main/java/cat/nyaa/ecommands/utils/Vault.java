@@ -3,6 +3,7 @@ package cat.nyaa.ecommands.utils;
 import cat.nyaa.ecore.EconomyCore;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class Vault {
     public final EconomyCore economyCore;
     public final UUID vaultUUID;
     public final String name;
+    public final OfflinePlayer player;
 
     private Vault(OfflinePlayer player, boolean isSystemVault, EconomyCore economyCore) {
         this.isSystemVault = isSystemVault;
@@ -20,9 +22,11 @@ public class Vault {
             if (!player.hasPlayedBefore()) {
                 throw new IllegalArgumentException("Player not found");
             }
+            this.player = player;
             this.vaultUUID = player.getUniqueId();
             this.name = player.getName();
         } else {
+            this.player = null;
             this.vaultUUID = null;
             this.name = economyCore.systemVaultName();
         }

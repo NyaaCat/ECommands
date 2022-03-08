@@ -24,4 +24,6 @@ public class EcoCommandLang {
     public Text operationFailed = Text.of("&7Failed to {operation}. It may caused by insufficient/excessive balance of {player}, or other unexpected failures.");
     public Text exceptionOccurred = Text.of("unexpected exception occurred: {exception}");
     public Text operationInvalid = Text.of("&7{operation} is not a valid operation, operations available are {operations}.");
+    public Text balanceAddedNotice = Text.of("&7{operator} had added {amount}{currencyUnit} to your balance.");
+    public Text balanceRemovedNotice = Text.of("&7{operator} had removed {amount}{currencyUnit} from your balance.");
 }

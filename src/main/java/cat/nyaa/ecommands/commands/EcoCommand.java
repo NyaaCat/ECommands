@@ -126,6 +126,24 @@ public class EcoCommand implements TabExecutor {
                                             Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                     )
                             );
+                            if(!vault.isSystemVault){
+                                if(vault.player.isOnline()){
+                                    vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceRemovedNotice.produce(
+                                            Pair.of("operator",commandSender.getName()),
+                                            Pair.of("amount",amount),
+                                            Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                    ));
+                                }
+                            }
+                            if(!targetVault.isSystemVault){
+                                if(targetVault.player.isOnline()){
+                                    targetVault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceAddedNotice.produce(
+                                            Pair.of("operator",commandSender.getName()),
+                                            Pair.of("amount",amount),
+                                            Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                    ));
+                                }
+                            }
                         }
                     } else {
                         commandSender.sendMessage(
@@ -147,6 +165,15 @@ public class EcoCommand implements TabExecutor {
                                         Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 )
                         );
+                        if(!vault.isSystemVault){
+                            if(vault.player.isOnline()){
+                                vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceAddedNotice.produce(
+                                        Pair.of("operator",commandSender.getName()),
+                                        Pair.of("amount",amount),
+                                        Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                ));
+                            }
+                        }
                     } else {
                         commandSender.sendMessage(
                                 pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
@@ -167,6 +194,15 @@ public class EcoCommand implements TabExecutor {
                                         Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 )
                         );
+                        if(!vault.isSystemVault){
+                            if(vault.player.isOnline()){
+                                vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceRemovedNotice.produce(
+                                        Pair.of("operator",commandSender.getName()),
+                                        Pair.of("amount",amount),
+                                        Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                ));
+                            }
+                        }
                     } else {
                         commandSender.sendMessage(
                                 pluginInstance.getMainLang().ecoCommand.operationFailed.produce(
