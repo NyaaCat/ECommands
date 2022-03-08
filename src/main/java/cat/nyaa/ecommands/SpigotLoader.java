@@ -40,7 +40,20 @@ public class SpigotLoader extends JavaPlugin {
         var ecommandsTabCommand = new ECommandsCommand(this);
         var balanceTabCommand = new BalanceCommand(this);
 
+        this.getServer().getPluginCommand("ecommands:pay").setExecutor(payTabCommand);
+        this.getServer().getPluginCommand("ecommands:pay").setTabCompleter(payTabCommand);
+
+        this.getServer().getPluginCommand("ecommands:eco").setExecutor(ecoTabCommand);
+        this.getServer().getPluginCommand("ecommands:eco").setTabCompleter(ecoTabCommand);
+
+        this.getServer().getPluginCommand("ecommands:ecommands").setExecutor(ecommandsTabCommand);
+        this.getServer().getPluginCommand("ecommands:ecommands").setTabCompleter(ecommandsTabCommand);
+
+        this.getServer().getPluginCommand("ecommands:balance").setExecutor(balanceTabCommand);
+        this.getServer().getPluginCommand("ecommands:balance").setTabCompleter(balanceTabCommand);
+
         getServer().getScheduler().runTaskLater(this, () -> {
+            // trying to override other plugin commands
             this.getServer().getPluginCommand("pay").setExecutor(payTabCommand);
             this.getServer().getPluginCommand("pay").setTabCompleter(payTabCommand);
 
