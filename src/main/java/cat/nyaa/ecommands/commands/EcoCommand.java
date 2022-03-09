@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class EcoCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
     private final List<String> operations = Arrays.stream(Operations.values()).map((element) -> element.name().toLowerCase()).collect(Collectors.toList());
+    private final String ECO_PERMISSION_NODE = "ecommands.eco";
 
     public EcoCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -25,6 +26,10 @@ public class EcoCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+        if (!commandSender.hasPermission(ECO_PERMISSION_NODE)) {
+            commandSender.sendMessage(pluginInstance.getMainLang().commonLang.permissionDenied.produce());
+            return true;
+        }
         if (args.length < 3) {
             commandSender.sendMessage(
                     pluginInstance.getMainLang().ecoCommand.help.produce(
@@ -126,21 +131,21 @@ public class EcoCommand implements TabExecutor {
                                             Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                     )
                             );
-                            if(!vault.isSystemVault){
-                                if(vault.player.isOnline()){
+                            if (!vault.isSystemVault) {
+                                if (vault.player.isOnline()) {
                                     vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceRemovedNotice.produce(
-                                            Pair.of("operator",commandSender.getName()),
-                                            Pair.of("amount",amount),
-                                            Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                            Pair.of("operator", commandSender.getName()),
+                                            Pair.of("amount", amount),
+                                            Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                     ));
                                 }
                             }
-                            if(!targetVault.isSystemVault){
-                                if(targetVault.player.isOnline()){
+                            if (!targetVault.isSystemVault) {
+                                if (targetVault.player.isOnline()) {
                                     targetVault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceAddedNotice.produce(
-                                            Pair.of("operator",commandSender.getName()),
-                                            Pair.of("amount",amount),
-                                            Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                            Pair.of("operator", commandSender.getName()),
+                                            Pair.of("amount", amount),
+                                            Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                     ));
                                 }
                             }
@@ -165,12 +170,12 @@ public class EcoCommand implements TabExecutor {
                                         Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 )
                         );
-                        if(!vault.isSystemVault){
-                            if(vault.player.isOnline()){
+                        if (!vault.isSystemVault) {
+                            if (vault.player.isOnline()) {
                                 vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceAddedNotice.produce(
-                                        Pair.of("operator",commandSender.getName()),
-                                        Pair.of("amount",amount),
-                                        Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                        Pair.of("operator", commandSender.getName()),
+                                        Pair.of("amount", amount),
+                                        Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 ));
                             }
                         }
@@ -194,12 +199,12 @@ public class EcoCommand implements TabExecutor {
                                         Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 )
                         );
-                        if(!vault.isSystemVault){
-                            if(vault.player.isOnline()){
+                        if (!vault.isSystemVault) {
+                            if (vault.player.isOnline()) {
                                 vault.player.getPlayer().sendMessage(pluginInstance.getMainLang().ecoCommand.balanceRemovedNotice.produce(
-                                        Pair.of("operator",commandSender.getName()),
-                                        Pair.of("amount",amount),
-                                        Pair.of("currencyUnit",pluginInstance.getEconomyCore().currencyNamePlural())
+                                        Pair.of("operator", commandSender.getName()),
+                                        Pair.of("amount", amount),
+                                        Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
                                 ));
                             }
                         }
@@ -244,6 +249,9 @@ public class EcoCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
+        if (!commandSender.hasPermission(ECO_PERMISSION_NODE)) {
+            return null;
+        }
         if (strings.length < 2) {
             return operations;
         }

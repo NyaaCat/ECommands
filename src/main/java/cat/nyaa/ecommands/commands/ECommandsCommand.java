@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ECommandsCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
+    private final String ECOMMAND_COMMAND_PERMISSION_NODE = "ecommands.ecommand";
 
     public ECommandsCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -17,6 +18,10 @@ public class ECommandsCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+        if (!commandSender.hasPermission(ECOMMAND_COMMAND_PERMISSION_NODE)) {
+            commandSender.sendMessage(pluginInstance.getMainLang().commonLang.permissionDenied.produce());
+            return true;
+        }
         if (args.length == 0) {
             return false;
         }
@@ -38,6 +43,9 @@ public class ECommandsCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
+        if (!commandSender.hasPermission(ECOMMAND_COMMAND_PERMISSION_NODE)) {
+            return null;
+        }
         if (strings.length == 0) {
             return List.of("reload");
         }

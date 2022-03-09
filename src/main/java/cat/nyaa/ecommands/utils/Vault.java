@@ -3,7 +3,6 @@ package cat.nyaa.ecommands.utils;
 import cat.nyaa.ecore.EconomyCore;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.UUID;

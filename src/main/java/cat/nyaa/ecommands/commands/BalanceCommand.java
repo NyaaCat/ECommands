@@ -16,7 +16,8 @@ import java.util.List;
 
 public class BalanceCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
-    private final String PERMISSION_BALANCE_OTHERS = "ecommands.balance.others";
+    private final String BALANCE_PERMISSION_NODE = "ecommands.balance";
+    private final String BALANCE_OTHERS_PERMISSION_NODE = "ecommands.balance.others";
 
     public BalanceCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = pluginInstance;
@@ -24,6 +25,11 @@ public class BalanceCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+        if (!commandSender.hasPermission(BALANCE_PERMISSION_NODE) && !commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
+            commandSender.sendMessage(pluginInstance.getMainLang().commonLang.permissionDenied.produce());
+            return true;
+        }
+
         if (args.length == 0) {
             if (commandSender instanceof ConsoleCommandSender) {
                 commandSender.sendMessage(
@@ -38,7 +44,7 @@ public class BalanceCommand implements TabExecutor {
                 );
             }
         } else {
-            if (args[0].equalsIgnoreCase(commandSender.getName()) && !commandSender.hasPermission(PERMISSION_BALANCE_OTHERS)) {
+            if (args[0].equalsIgnoreCase(commandSender.getName()) && !commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
                 commandSender.sendMessage(pluginInstance.getMainLang().balanceCommand.insufficientPermission.produce());
                 return true;
             }
@@ -62,9 +68,12 @@ public class BalanceCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
-        if (strings.length == 0) {
+        if (!commandSender.hasPermission(BALANCE_PERMISSION_NODE) || !commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
+            return null;
+        }
+        if (strings.length == 1) {
             var list = new ArrayList<String>();
-            if (commandSender instanceof ConsoleCommandSender || (commandSender instanceof Player && commandSender.hasPermission(PERMISSION_BALANCE_OTHERS))) {
+            if (commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
                 Bukkit.getOnlinePlayers().forEach(player -> list.add(player.getName()));
                 list.add("$system");
             } else {

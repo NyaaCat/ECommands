@@ -23,6 +23,7 @@ public class PayCommand implements TabExecutor {
     private final Map<UUID, Payment> waitingPayments = new HashMap<>();
     private final BaseComponent confirmButton;
     private final BaseComponent cancelButton;
+    private final String PAY_PERMISSION_NODE = "ecommands.pay";
     List<String> operations = List.of("cancel", "confirm", "show");
 
     public PayCommand(SpigotLoader pluginInstance) {
@@ -44,12 +45,12 @@ public class PayCommand implements TabExecutor {
             commandSender.sendMessage("Only players can use this command.");
             return true;
         }
+        if (!commandSender.hasPermission(PAY_PERMISSION_NODE)) {
+            commandSender.sendMessage(pluginInstance.getMainLang().commonLang.permissionDenied.produce());
+            return true;
+        }
         if (args.length == 1) {
             switch (args[0].toLowerCase()) {
-                case "help" -> {
-                    player.sendMessage(pluginInstance.getMainLang().payCommand.help.produce());
-                    return true;
-                }
                 case "confirm" -> {
                     var payment = waitingPayments.remove(player.getUniqueId());
                     if (payment != null) {
@@ -109,12 +110,15 @@ public class PayCommand implements TabExecutor {
                     }
                     return true;
                 }
-                default -> {
-                    return false;
+                default /*include help*/ -> {
+                    player.sendMessage(pluginInstance.getMainLang().payCommand.help.produce());
+                    return true;
                 }
             }
-
-        } else if (args.length >= 2) {
+        }
+        if (args.length < 2) {
+            player.sendMessage(pluginInstance.getMainLang().payCommand.help.produce());
+        } else {
             double amount;
             try {
                 amount = Double.parseDouble(args[0]);
@@ -160,10 +164,8 @@ public class PayCommand implements TabExecutor {
                     amount, pluginInstance.getEconomyCore());
             waitingPayments.put(player.getUniqueId(), payment);
             sendPaymentCheckMessage(payment, player);
-            return true;
-        } else {
-            return false;
         }
+        return true;
     }
 
     private void sendPaymentCheckMessage(Payment payment, Player player) {
@@ -193,6 +195,9 @@ public class PayCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
         if (!(commandSender instanceof Player senderPlayer)) {
+            return null;
+        }
+        if (!commandSender.hasPermission(PAY_PERMISSION_NODE)) {
             return null;
         }
         var hasWaitingPayment = waitingPayments.containsKey(senderPlayer.getUniqueId());
