@@ -208,9 +208,6 @@ public class PayCommand implements TabExecutor {
                 items.addAll(operations);
             }
             return items;
-        } else if (strings.length > 1 && !operations.contains(strings[0])) {
-            Bukkit.getOnlinePlayers().forEach((player) -> items.add(player.getName()));
-            return items;
         } else {
             return null;
         }

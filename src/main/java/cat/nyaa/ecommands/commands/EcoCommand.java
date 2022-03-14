@@ -7,10 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -261,7 +261,7 @@ public class EcoCommand implements TabExecutor {
         if (strings.length == 2) {
             return List.of("<amount>");
         }
-        var vaultList = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toCollection(ArrayList::new)); //confused
+        var vaultList = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).filter(t -> t.toLowerCase().startsWith(strings[1])).toList();
         vaultList.add("$system");
         if (strings.length == 3) {
             return vaultList;

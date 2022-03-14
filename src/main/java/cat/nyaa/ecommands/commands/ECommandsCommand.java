@@ -46,7 +46,7 @@ public class ECommandsCommand implements TabExecutor {
         if (!commandSender.hasPermission(ECOMMAND_COMMAND_PERMISSION_NODE)) {
             return null;
         }
-        if (strings.length == 0) {
+        if (strings.length == 1) {
             return List.of("reload");
         }
         return null;

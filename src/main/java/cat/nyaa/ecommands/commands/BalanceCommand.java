@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -72,9 +73,9 @@ public class BalanceCommand implements TabExecutor {
             return null;
         }
         if (strings.length == 1) {
-            var list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             if (commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
-                Bukkit.getOnlinePlayers().forEach(player -> list.add(player.getName()));
+                list = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).filter(t -> t.toLowerCase().startsWith(strings[0].toLowerCase())).toList();
                 list.add("$system");
             } else {
                 list.add(commandSender.getName());
