@@ -11,6 +11,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -261,13 +262,13 @@ public class EcoCommand implements TabExecutor {
         if (strings.length == 2) {
             return List.of("<amount>");
         }
-        var vaultList = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).filter(t -> t.toLowerCase().startsWith(strings[1])).toList();
+        var vaultList = new ArrayList<>(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).toList());
         vaultList.add("$system");
         if (strings.length == 3) {
-            return vaultList;
+            return vaultList.stream().filter(t->t.toLowerCase().startsWith(strings[2].toLowerCase())).toList();
         }
         if (strings.length == 4 && strings[0].equalsIgnoreCase("transfer")) {
-            return vaultList;
+            return vaultList.stream().filter(t->t.toLowerCase().startsWith(strings[3].toLowerCase())).toList();
         }
         return null;
     }

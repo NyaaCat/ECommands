@@ -75,12 +75,12 @@ public class BalanceCommand implements TabExecutor {
         if (strings.length == 1) {
             List<String> list = new ArrayList<>();
             if (commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
-                list = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).filter(t -> t.toLowerCase().startsWith(strings[0].toLowerCase())).toList();
+                list.addAll(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).toList());
                 list.add("$system");
             } else {
                 list.add(commandSender.getName());
             }
-            return list;
+            return list.stream().filter(t->t.toLowerCase().startsWith(strings[0].toLowerCase())).toList();
         } else {
             return null;
         }
