@@ -265,10 +265,10 @@ public class EcoCommand implements TabExecutor {
         var vaultList = new ArrayList<>(Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).toList());
         vaultList.add("$system");
         if (strings.length == 3) {
-            return vaultList.stream().filter(t->t.toLowerCase().startsWith(strings[2].toLowerCase())).toList();
+            return vaultList.stream().filter(t -> t.toLowerCase().startsWith(strings[2].toLowerCase())).toList();
         }
         if (strings.length == 4 && strings[0].equalsIgnoreCase("transfer")) {
-            return vaultList.stream().filter(t->t.toLowerCase().startsWith(strings[3].toLowerCase())).toList();
+            return vaultList.stream().filter(t -> t.toLowerCase().startsWith(strings[3].toLowerCase())).toList();
         }
         return null;
     }

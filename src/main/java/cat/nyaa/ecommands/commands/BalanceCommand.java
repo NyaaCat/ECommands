@@ -45,7 +45,7 @@ public class BalanceCommand implements TabExecutor {
                 );
             }
         } else {
-            if (args[0].equalsIgnoreCase(commandSender.getName()) && !commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
+            if (!args[0].equalsIgnoreCase(commandSender.getName()) && !commandSender.hasPermission(BALANCE_OTHERS_PERMISSION_NODE)) {
                 commandSender.sendMessage(pluginInstance.getMainLang().balanceCommand.insufficientPermission.produce());
                 return true;
             }
@@ -80,7 +80,7 @@ public class BalanceCommand implements TabExecutor {
             } else {
                 list.add(commandSender.getName());
             }
-            return list.stream().filter(t->t.toLowerCase().startsWith(strings[0].toLowerCase())).toList();
+            return list.stream().filter(t -> t.toLowerCase().startsWith(strings[0].toLowerCase())).toList();
         } else {
             return null;
         }
