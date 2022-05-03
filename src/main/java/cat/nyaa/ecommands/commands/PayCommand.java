@@ -148,14 +148,14 @@ public class PayCommand implements TabExecutor {
             }
 
             var totallyCost = amount * targets.size();
-            var receivers = targets.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+            var receiversString = targets.stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.joining(", "));
 
             if (pluginInstance.getEconomyCore().getPlayerBalance(player.getUniqueId()) < totallyCost) {
                 player.sendMessage(pluginInstance.getMainLang().payCommand.insufficientBalance.produce(
                         Pair.of("totallyCost", totallyCost),
                         Pair.of("amount", amount),
-                        Pair.of("receivers", receivers)
+                        Pair.of("receivers", receiversString)
                 ));
                 return true;
             }
