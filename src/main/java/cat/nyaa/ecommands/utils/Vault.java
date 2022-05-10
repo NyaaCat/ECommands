@@ -18,7 +18,7 @@ public class Vault {
         this.isSystemVault = isSystemVault;
         if (!isSystemVault) {
             assert player != null;
-            if (!player.hasPlayedBefore()) {
+            if (!player.isOnline() && !player.hasPlayedBefore()) {
                 throw new IllegalArgumentException("Player not found");
             }
             this.player = player;
