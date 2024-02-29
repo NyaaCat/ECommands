@@ -6,7 +6,7 @@
 
     <groupId>cat.nyaa</groupId>
     <artifactId>ECommands</artifactId>
-    <version>0.0.1-snapshot</version>
+    <version>0.0.2-snapshot</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
