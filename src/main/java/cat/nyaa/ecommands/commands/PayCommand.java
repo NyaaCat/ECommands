@@ -3,11 +3,10 @@ package cat.nyaa.ecommands.commands;
 import cat.nyaa.ecommands.SpigotLoader;
 import cat.nyaa.ecommands.utils.Payment;
 import land.melon.lab.simplelanguageloader.utils.Pair;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,20 +20,20 @@ import java.util.stream.Collectors;
 public class PayCommand implements TabExecutor {
     private final SpigotLoader pluginInstance;
     private final Map<UUID, Payment> waitingPayments = new HashMap<>();
-    private final BaseComponent confirmButton;
-    private final BaseComponent cancelButton;
+    private final Component confirmButton;
+    private final Component cancelButton;
     private final String PAY_PERMISSION_NODE = "ecommands.pay";
     List<String> operations = List.of("cancel", "confirm", "show");
 
     public PayCommand(SpigotLoader pluginInstance) {
         this.pluginInstance = Objects.requireNonNull(pluginInstance);
 
-        confirmButton = new TextComponent(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.confirmButtonText.produce()));
-        confirmButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.confirmButtonHoverText.produce()))));
-        confirmButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/pay confirm"));
-        cancelButton = new TextComponent(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.cancelButtonText.produce()));
-        cancelButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(pluginInstance.getMainLang().payCommand.cancelButtonHoverText.produce()))));
-        cancelButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/pay cancel"));
+        confirmButton = LegacyComponentSerializer.legacySection().deserialize(pluginInstance.getMainLang().payCommand.confirmButtonText.colored())
+                .hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(pluginInstance.getMainLang().payCommand.confirmButtonHoverText.colored())))
+                .clickEvent(ClickEvent.runCommand("/pay confirm"));
+        cancelButton = LegacyComponentSerializer.legacySection().deserialize(pluginInstance.getMainLang().payCommand.cancelButtonText.colored())
+                .hoverEvent(HoverEvent.showText(LegacyComponentSerializer.legacySection().deserialize(pluginInstance.getMainLang().payCommand.cancelButtonHoverText.colored())))
+                .clickEvent(ClickEvent.runCommand("/pay cancel"));
     }
 
     // Usage:
@@ -140,7 +139,7 @@ public class PayCommand implements TabExecutor {
                 else
                     targets.add(target.getUniqueId());
             }
-            if (targetNotOnline.size() > 0) {
+            if (!targetNotOnline.isEmpty()) {
                 player.sendMessage(pluginInstance.getMainLang().payCommand.transferReceiverOffline.produce(
                         Pair.of("receivers", String.join(", ", targetNotOnline))
                 ));
@@ -185,8 +184,8 @@ public class PayCommand implements TabExecutor {
                 Pair.of("balanceAfterTransfer", pluginInstance.getEconomyCore().getPlayerBalance(payment.from()) - amountTotal),
                 Pair.of("currencyUnit", pluginInstance.getEconomyCore().currencyNamePlural())
         ));
-        player.spigot().sendMessage(
-                pluginInstance.getMainLang().payCommand.transferConfirmButton.produceWithBaseComponent(
+        player.sendMessage(
+                pluginInstance.getMainLang().payCommand.transferConfirmButton.produceAsComponent(
                         Pair.of("confirmButton", confirmButton),
                         Pair.of("cancelButton", cancelButton)
                 ));
