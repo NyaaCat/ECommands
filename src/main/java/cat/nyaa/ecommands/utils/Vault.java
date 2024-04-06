@@ -17,8 +17,7 @@ public class Vault {
     private Vault(OfflinePlayer player, boolean isSystemVault, EconomyCore economyCore) {
         this.isSystemVault = isSystemVault;
         if (!isSystemVault) {
-            assert player != null;
-            if (!player.isOnline() && !player.hasPlayedBefore()) {
+            if (player == null || player.isOnline() && !player.hasPlayedBefore()) {
                 throw new IllegalArgumentException("Player not found");
             }
             this.player = player;
@@ -38,7 +37,7 @@ public class Vault {
         if (name.equalsIgnoreCase("$system")) {
             return new Vault(null, true, economyCore);
         } else {
-            var player = Objects.requireNonNullElse(Bukkit.getPlayerExact(name), Bukkit.getOfflinePlayer(name));
+            var player = Bukkit.getOfflinePlayerIfCached(name);
             return new Vault(player, false, economyCore);
         }
     }

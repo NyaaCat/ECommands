@@ -131,17 +131,17 @@ public class PayCommand implements TabExecutor {
             }
 
             List<UUID> targets = new ArrayList<>();
-            List<String> targetNotOnline = new ArrayList<>();
+            List<String> targetNotFound = new ArrayList<>();
             for (int i = 1; i < args.length; i++) {
-                var target = pluginInstance.getServer().getPlayerExact(args[i]);
+                var target = pluginInstance.getServer().getOfflinePlayerIfCached(args[i]);
                 if (target == null)
-                    targetNotOnline.add(args[i]);
+                    targetNotFound.add(args[i]);
                 else
                     targets.add(target.getUniqueId());
             }
-            if (!targetNotOnline.isEmpty()) {
-                player.sendMessage(pluginInstance.getMainLang().payCommand.transferReceiverOffline.produce(
-                        Pair.of("receivers", String.join(", ", targetNotOnline))
+            if (!targetNotFound.isEmpty()) {
+                player.sendMessage(pluginInstance.getMainLang().payCommand.transferReceiverNotFound.produce(
+                        Pair.of("receivers", String.join(", ", targetNotFound))
                 ));
                 return true;
             }

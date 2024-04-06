@@ -29,7 +29,7 @@ public class PayCommandLang {
     public Text invalidAmount = Text.of("&8&u{amount}&7 is not a valid amount. It should be a positive number.");
     public Text transferFailed = Text.of("&7Transfer failed. It may caused by insufficient balance. Or try again later if you have enough balance.");
     public Text noWaitingForConfirmTransfer = Text.of("&7You have no transfer waiting for confirm.");
-    public Text transferReceiverOffline = Text.of("&7Receiver {receivers} is not online, or you have typed the name incorrectly.");
+    public Text transferReceiverNotFound = Text.of("&7Receiver {receivers} was not found, you may check the name spelling");
     public Text transferReceived = Text.of(
             "&7You have received {amount} from {sender}, receipt id: 0x{receiptId}",
             "&7Service fee {serviceFee}{currencyUnit} ({serviceFeePercent}%) were automatically charged.",
