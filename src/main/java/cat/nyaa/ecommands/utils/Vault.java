@@ -16,7 +16,7 @@ public class Vault {
     private Vault(OfflinePlayer player, boolean isSystemVault, EconomyCore economyCore) {
         this.isSystemVault = isSystemVault;
         if (!isSystemVault) {
-            if (player == null || player.isOnline() && !player.hasPlayedBefore()) {
+            if (player == null || (!player.isOnline() && !player.hasPlayedBefore())) {
                 throw new IllegalArgumentException("Player not found");
             }
             this.player = player;
