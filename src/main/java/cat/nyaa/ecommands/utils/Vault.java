@@ -4,7 +4,6 @@ import cat.nyaa.ecore.EconomyCore;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class Vault {
@@ -37,8 +36,9 @@ public class Vault {
         if (name.equalsIgnoreCase("$system")) {
             return new Vault(null, true, economyCore);
         } else {
-            var player = Bukkit.getOfflinePlayerIfCached(name);
-            return new Vault(player, false, economyCore);
+            var onlinePlayer = Bukkit.getPlayerExact(name);
+            var offlinePlayer = Bukkit.getOfflinePlayerIfCached(name);
+            return new Vault(onlinePlayer != null ? onlinePlayer : offlinePlayer, false, economyCore);
         }
     }
 
